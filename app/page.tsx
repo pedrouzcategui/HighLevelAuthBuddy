@@ -1,7 +1,3 @@
 export default function Home() {
-  return (
-    <main>
-      HighLevel Buddy
-    </main>
-  );
+  return <main>HighLevel Buddy!</main>;
 }
