@@ -3,6 +3,7 @@ import { type User } from "@prisma/client";
 import { type Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/lib/db";
 
 export const authConfig = {
@@ -16,6 +17,9 @@ export const authConfig = {
   // Also in this github issue they uses type assertion as workaround for typing error
   // https://github.com/nextauthjs/next-auth/issues/8136
   adapter: PrismaAdapter(db) as Adapter,
+
+  // JWT strategy is a must for allowing Credentials authentication
+  session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
       credentials: {
@@ -48,6 +52,12 @@ export const authConfig = {
 
         return null;
       },
+    }),
+
+    GoogleProvider({
+      // TODO: find some way to make `.env` variables typed?
+      clientId: process.env.ID!,
+      clientSecret: process.env.SECRET!,
     }),
   ],
 } satisfies NextAuthOptions;
