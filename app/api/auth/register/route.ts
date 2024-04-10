@@ -1,6 +1,12 @@
-import { type RegisterUserPayload } from "@/hooks/auth/register";
 import { db } from "@/lib/db";
 import bcrypt from "bcrypt";
+
+export type RegisterUserPayload = {
+  email: string;
+  name: string;
+  password: string;
+  phone: string;
+};
 
 const HASH_ROUNDS = 13;
 

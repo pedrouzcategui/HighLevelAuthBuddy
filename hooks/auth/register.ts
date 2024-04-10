@@ -1,12 +1,6 @@
+import { type RegisterUserPayload } from "@/app/api/auth/register/route";
 import { API_ROUTES, api } from "@/lib/api";
 import { useMutation } from "@tanstack/react-query";
-
-export type RegisterUserPayload = {
-  email: string;
-  name: string;
-  password: string;
-  phone: string;
-};
 
 export function useRegisterUser() {
   return useMutation({

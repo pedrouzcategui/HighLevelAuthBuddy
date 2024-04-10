@@ -1,5 +1,6 @@
 "use client";
 
+import { type RegisterUserPayload } from "@/app/api/auth/register/route";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -9,10 +10,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  type RegisterUserPayload,
-  useRegisterUser,
-} from "@/hooks/auth/register";
+import { useRegisterUser } from "@/hooks/auth/register";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
