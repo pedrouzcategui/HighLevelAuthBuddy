@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -16,12 +16,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text // Uncomment once the database provider has been updated
-  access_token      String? // @db.Text // Uncomment once the database provider has been updated
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text // Uncomment once the database provider has been updated
+  id_token          String? @db.Text
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -38,13 +38,59 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
+  id                  String               @id @default(cuid())
+  name                String?
+  email               String?              @unique
+  phone               String?              @unique
+  emailVerified       DateTime?
+  image               String?
+  password            String?
+  accounts            Account[]
+  sessions            Session[]
+  agencies            Agency[]
+  locations           Location[]
+  Auth_Buddy_API_Keys Auth_Buddy_API_Key[]
+  Log                 Log[]
+}
+
+model Location {
+  id           String  @id @default(uuid())
+  companyId    String
+  Agency       Agency? @relation(fields: [agencyId], references: [id])
+  User         User?   @relation(fields: [userId], references: [id])
+  name         String
+  access_token String  @db.Text
+  userId       String?
+  agencyId     String?
+  Log          Log[]
+}
+
+model Agency {
+  id        String     @id @default(uuid())
+  companyId String
+  name      String
+  User      User?      @relation(fields: [userId], references: [id])
+  userId    String?
+  Location  Location[]
+}
+
+model Auth_Buddy_API_Key {
+  id             String   @id @default(uuid())
+  user           User     @relation(fields: [userId], references: [id])
+  apiKey         String   @db.Text
+  generationDate DateTime @default(now())
+  userId         String
+}
+
+model Log {
+  id             String   @id @default(cuid())
+  User           User     @relation(fields: [userId], references: [id])
+  userId         String
+  Location       Location @relation(fields: [locationId], references: [id])
+  locationId     String
+  executionDate  DateTime
+  requestMethod  String
+  responseStatus Int
 }
 
 model VerificationToken {
