@@ -1,14 +1,8 @@
+import { type RegisterUserPayload } from "@/hooks/auth/register";
 import { db } from "@/lib/db";
 import bcrypt from "bcrypt";
 
 const HASH_ROUNDS = 13;
-
-type RegisterUserPayload = {
-  email: string;
-  name: string;
-  password: string;
-  phone: string;
-};
 
 export async function POST(request: Request) {
   try {
