@@ -1,10 +1,14 @@
 import { type NextAuthOptions } from "next-auth";
-import { type User } from "@prisma/client";
 import { type Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/lib/db";
+import { API_ROUTES, api } from "./api";
+import {
+  type LoginPayload,
+  type LoginResponse,
+} from "@/app/api/auth/login/route";
 
 export const authConfig = {
   // Warning: wtf `PrismaAdapter` is not compatible with expected adapter in `NextAuthOptions`
@@ -28,29 +32,28 @@ export const authConfig = {
       },
 
       authorize: async (credentials) => {
-        // TODO: add password column to User entity
-        // TODO: implement credentials verification flow
-        const { email, password } = credentials ?? {};
-        const TEST_EMAIL = "johndoe@test.com";
-        const TEST_PASSWORD = "1234";
-
-        if (email !== TEST_EMAIL || password !== TEST_PASSWORD) {
+        // Credentials should be null if we call `signIn('credentials')` without payload xd
+        if (!credentials) {
           return null;
         }
 
-        const user: User | undefined = {
-          id: "1",
-          name: "John",
-          email: TEST_EMAIL,
-          emailVerified: null,
-          image: null,
-        };
+        const payload = {
+          email: credentials.email,
+          password: credentials.password,
+        } satisfies LoginPayload;
 
-        if (user) {
-          return user;
+        const loginResponse = await api.post<LoginResponse>(
+          API_ROUTES.auth.login,
+          payload,
+        );
+
+        // TODO: I dont like use http status for evaluate conditions
+        // Maybe return an `ok` field in all responses?
+        if (loginResponse.status !== 200) {
+          return null;
         }
 
-        return null;
+        return loginResponse.data;
       },
     }),
 
