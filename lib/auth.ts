@@ -56,8 +56,8 @@ export const authConfig = {
 
     GoogleProvider({
       // TODO: find some way to make `.env` variables typed?
-      clientId: process.env.ID!,
-      clientSecret: process.env.SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
 } satisfies NextAuthOptions;
