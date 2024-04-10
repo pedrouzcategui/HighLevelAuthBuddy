@@ -1,9 +1,15 @@
 "use client";
 
-import { Button } from "../ui/button";
-import { FormField, FormItem, FormLabel, FormControl, Form } from "../ui/form";
-import { Input } from "../ui/input";
-import { Separator } from "../ui/separator";
+import { Button } from "@/components/ui/button";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  Form,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { signIn } from "next-auth/react";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
 import { useForm } from "react-hook-form";
