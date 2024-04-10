@@ -63,4 +63,7 @@ export const authConfig = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
+  callbacks: {
+    redirect: async ({ url }) => url,
+  },
 } satisfies NextAuthOptions;
