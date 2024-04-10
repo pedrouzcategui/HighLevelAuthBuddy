@@ -21,6 +21,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SiGoogle } from "@icons-pack/react-simple-icons";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -30,6 +32,8 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 function LoginForm() {
+  const router = useRouter();
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -39,8 +43,27 @@ function LoginForm() {
   });
 
   // TODO: implement login with next auth
-  function onSubmit(values: LoginFormValues) {
-    console.log(values);
+  async function onSubmit(formValues: LoginFormValues) {
+    try {
+      const { email, password } = formValues;
+
+      const authResponse = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (authResponse?.ok) {
+        // TODO: replace to home
+        router.replace("/uwu");
+        return;
+      }
+
+      // TODO: handle notification as toast or something
+      alert("Invalid credentials");
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (

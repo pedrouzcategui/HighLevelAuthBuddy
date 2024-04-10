@@ -7,14 +7,14 @@ import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/lib/db";
 
 export const authConfig = {
-  // Warning: wtf `PrismaAdapter` is non compatible with expected adapter in `NextAuthOptions`
-  // But official docs from NextAuth uses `PrismaAdapter` from `@auth/prisma-adapter` and sets `@next-auth/adapter` as deprecated
+  // Warning: wtf `PrismaAdapter` is not compatible with expected adapter in `NextAuthOptions`
+  // But official docs from NextAuth uses `PrismaAdapter` from `@auth/prisma-adapter` and indicates `@next-auth/adapter` as deprecated
 
   // References:
   // v4 Docs: https://authjs.dev/reference/adapter/prisma?_gl=1*1sje5j7*_gcl_au*NzIyNzc1MDk2LjE3MDk3ODMxNDY.
   // v3 Docs: https://next-auth.js.org/v3/adapters/prisma
 
-  // Also in this github issue they uses type assertion as workaround for typing error
+  // Also in this github issue they use type assertion as workaround for type error
   // https://github.com/nextauthjs/next-auth/issues/8136
   adapter: PrismaAdapter(db) as Adapter,
 
