@@ -9,13 +9,20 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  type RegisterUserPayload,
+  useRegisterUser,
+} from "@/hooks/auth/register";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const registerSchema = z.object({
   email: z.string().email(),
   name: z.string().min(3),
+
+  // TODO: phone number validation
   phone: z.string().min(1),
 
   // TODO: password strength validation should be here? I think so
@@ -23,25 +30,44 @@ const registerSchema = z.object({
   password: z.string().min(8),
 
   // TODO: custom validator for checking if its value is same as `password` field
-  repeatedPassword: z.string().min(8),
+  confirmPassword: z.string().min(8),
 });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
+  const router = useRouter();
+  const { mutateAsync, isPending } = useRegisterUser();
+
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       email: "",
       name: "",
       password: "",
-      repeatedPassword: "",
+      confirmPassword: "",
       phone: "",
     },
   });
 
-  function onSubmit(formValues: RegisterFormValues) {
-    console.log(formValues);
+  async function onSubmit(formValues: RegisterFormValues) {
+    try {
+      const payload = {
+        email: formValues.email,
+        name: formValues.name,
+        password: formValues.password,
+        phone: formValues.phone,
+      } satisfies RegisterUserPayload;
+
+      await mutateAsync(payload);
+
+      router.replace("/auth/login");
+    } catch (err) {
+      // TODO: handle with toast
+      alert(
+        "user already registered? Something went wrong in user registration",
+      );
+    }
   }
 
   return (
@@ -116,10 +142,10 @@ export function RegisterForm() {
 
           <FormField
             control={form.control}
-            name="repeatedPassword"
+            name="confirmPassword"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Repeated password</FormLabel>
+                <FormLabel>Confirm password</FormLabel>
                 <FormControl>
                   <Input type="password" placeholder="******" {...field} />
                 </FormControl>
@@ -128,7 +154,8 @@ export function RegisterForm() {
           />
         </div>
 
-        <Button className="w-full" type="submit">
+        {/* TODO: create loading button state */}
+        <Button className="w-full" type="submit" disabled={isPending}>
           Create account
         </Button>
       </form>
