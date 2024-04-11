@@ -16,6 +16,13 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/components/ui/use-toast";
+import {
+  ErrorContainer,
+  type ErrorContainerProps,
+} from "@/components/common/error-container";
+import { type Dispatch, type SetStateAction, useState } from "react";
+import { ShieldOffIcon } from "lucide-react";
 
 type AuthProviders = "google";
 const SUCCESS_LOGIN_REDIRECTION = "/dashboard";
@@ -27,8 +34,13 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-function LoginForm() {
+type LoginFormProps = {
+  setError: Dispatch<SetStateAction<ErrorContainerProps | null>>;
+};
+
+function LoginForm({ setError }: LoginFormProps) {
   const router = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -51,15 +63,23 @@ function LoginForm() {
         redirect: false,
       });
 
-      if (authResponse?.ok) {
+      if (authResponse?.status === 200) {
         router.replace(SUCCESS_LOGIN_REDIRECTION);
         return;
       }
 
-      // TODO: handle notification as toast or something
-      alert("Invalid credentials");
+      // TODO: Handle better error messages
+      if (authResponse?.status === 401) {
+        setError({
+          title: "Authentication error",
+          description: "Cannot find any account with given credentials.",
+          Icon: ShieldOffIcon,
+        });
+      }
     } catch (err) {
-      console.error(err);
+      toast({
+        title: "Oops! Something was broken. Try again later.",
+      });
     }
   }
 
@@ -134,10 +154,14 @@ function ProvidersAuthButtons() {
 }
 
 export function LoginShowcase() {
+  const [error, setError] = useState<ErrorContainerProps | null>(null);
+
   return (
     <section className="space-y-6">
+      {error && <ErrorContainer {...error} />}
+
       <div className="space-y-10">
-        <LoginForm />
+        <LoginForm setError={setError} />
 
         <div className="relative flex justify-center">
           <Separator />
