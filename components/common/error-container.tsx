@@ -14,7 +14,7 @@ export function ErrorContainer({
 }: ErrorContainerProps) {
   return (
     <section className="flex gap-5 items-center bg-red-200 border-2 border-red-600 rounded-md px-5 py-3">
-      {Icon && <Icon size={42} className="stroke-red-600" />}
+      {Icon && <Icon className="h-10 w-10 stroke-red-600" />}
 
       <div>
         <header className="text-red-600 font-medium">{title}</header>

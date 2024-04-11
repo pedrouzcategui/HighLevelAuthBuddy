@@ -23,6 +23,7 @@ import {
 } from "@/components/common/error-container";
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { ShieldOffIcon } from "lucide-react";
+import { ButtonLoading } from "@/components/common/button-loading";
 
 type AuthProviders = "google";
 const SUCCESS_LOGIN_REDIRECTION = "/dashboard";
@@ -41,6 +42,7 @@ type LoginFormProps = {
 function LoginForm({ setError }: LoginFormProps) {
   const router = useRouter();
   const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -52,6 +54,7 @@ function LoginForm({ setError }: LoginFormProps) {
 
   async function onSubmit(formValues: LoginFormValues) {
     try {
+      setIsLoading(true);
       const { email, password } = formValues;
 
       const authResponse = await signIn("credentials", {
@@ -80,6 +83,8 @@ function LoginForm({ setError }: LoginFormProps) {
       toast({
         title: "Oops! Something was broken. Try again later.",
       });
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -122,9 +127,9 @@ function LoginForm({ setError }: LoginFormProps) {
           />
         </div>
 
-        <Button className="w-full" type="submit">
+        <ButtonLoading isLoading={isLoading} className="w-full" type="submit">
           Sign in
-        </Button>
+        </ButtonLoading>
       </form>
     </Form>
   );
