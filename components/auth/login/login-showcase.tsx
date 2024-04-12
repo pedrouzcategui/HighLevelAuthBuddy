@@ -7,7 +7,6 @@ import {
   FormLabel,
   FormControl,
   Form,
-  FormDescription,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -24,9 +23,8 @@ import {
   type ErrorContainerProps,
 } from "@/components/common/error-container";
 import { type Dispatch, type SetStateAction, useState } from "react";
-import { ShieldOffIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, ShieldOffIcon } from "lucide-react";
 import { ButtonLoading } from "@/components/common/button-loading";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 type AuthProviders = "google";
@@ -47,6 +45,7 @@ function LoginForm({ setError }: LoginFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [isShowingPassword, setIsShowingPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -133,7 +132,29 @@ function LoginForm({ setError }: LoginFormProps) {
                 <FormControl
                   className={cn(fieldState.error && "border-destructive")}
                 >
-                  <Input type="password" placeholder="******" {...field} />
+                  <div className="relative">
+                    <Input
+                      type={isShowingPassword ? "text" : "password"}
+                      placeholder={
+                        isShowingPassword ? "supersecretpassword" : "******"
+                      }
+                      {...field}
+                    />
+
+                    <Button
+                      onClick={() => setIsShowingPassword(!isShowingPassword)}
+                      asChild
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                      variant="ghost"
+                      size="icon"
+                    >
+                      {isShowingPassword ? (
+                        <EyeOffIcon className="h-5 w-5 stroke-muted-foreground" />
+                      ) : (
+                        <EyeIcon className="h-5 w-5 stroke-muted-foreground" />
+                      )}
+                    </Button>
+                  </div>
                 </FormControl>
 
                 <FormMessage />
