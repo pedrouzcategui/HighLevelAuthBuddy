@@ -18,7 +18,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type AuthProviders = "google";
-const SUCCESS_LOGIN_REDIRECTION = "/dashboard";
+const SUCCESS_LOGIN_REDIRECTION = "/home";
 
 const loginSchema = z.object({
   email: z.string().email(),
