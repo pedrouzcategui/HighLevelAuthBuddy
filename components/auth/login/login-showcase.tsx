@@ -7,6 +7,8 @@ import {
   FormLabel,
   FormControl,
   Form,
+  FormDescription,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -24,6 +26,8 @@ import {
 import { type Dispatch, type SetStateAction, useState } from "react";
 import { ShieldOffIcon } from "lucide-react";
 import { ButtonLoading } from "@/components/common/button-loading";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 type AuthProviders = "google";
 const SUCCESS_LOGIN_REDIRECTION = "/dashboard";
@@ -99,16 +103,20 @@ function LoginForm({ setError }: LoginFormProps) {
           <FormField
             control={form.control}
             name="email"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
-                <FormControl>
+                <FormControl
+                  className={cn(fieldState.error && "border-destructive")}
+                >
                   <Input
                     type="email"
                     placeholder="johdoe@mail.com"
                     {...field}
                   />
                 </FormControl>
+
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -116,12 +124,19 @@ function LoginForm({ setError }: LoginFormProps) {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
+                <FormLabel className="flex justify-between items-center">
+                  Password
+                </FormLabel>
+
+                <FormControl
+                  className={cn(fieldState.error && "border-destructive")}
+                >
                   <Input type="password" placeholder="******" {...field} />
                 </FormControl>
+
+                <FormMessage />
               </FormItem>
             )}
           />
