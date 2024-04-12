@@ -8,6 +8,7 @@ import {
   FormControl,
   Form,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -26,6 +27,7 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 import { EyeIcon, EyeOffIcon, ShieldOffIcon } from "lucide-react";
 import { ButtonLoading } from "@/components/common/button-loading";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type AuthProviders = "google";
 const SUCCESS_LOGIN_REDIRECTION = "/dashboard";
@@ -105,12 +107,11 @@ function LoginForm({ setError }: LoginFormProps) {
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
-                <FormControl
-                  className={cn(fieldState.error && "border-destructive")}
-                >
+                <FormControl>
                   <Input
                     type="email"
                     placeholder="johdoe@mail.com"
+                    className={cn(fieldState.error && "border-destructive")}
                     {...field}
                   />
                 </FormControl>
@@ -129,15 +130,14 @@ function LoginForm({ setError }: LoginFormProps) {
                   Password
                 </FormLabel>
 
-                <FormControl
-                  className={cn(fieldState.error && "border-destructive")}
-                >
+                <FormControl>
                   <div className="relative">
                     <Input
                       type={isShowingPassword ? "text" : "password"}
                       placeholder={
                         isShowingPassword ? "supersecretpassword" : "******"
                       }
+                      className={cn(fieldState.error && "border-destructive")}
                       {...field}
                     />
 
@@ -158,6 +158,15 @@ function LoginForm({ setError }: LoginFormProps) {
                 </FormControl>
 
                 <FormMessage />
+
+                <FormDescription>
+                  <Link
+                    href="/auth/password-recovery"
+                    className="text-xs font-semibold hover:text-primary"
+                  >
+                    Forgot password?
+                  </Link>
+                </FormDescription>
               </FormItem>
             )}
           />
