@@ -2,7 +2,6 @@
 
 import { Alert, type AlertProps } from "@/components/common/alert";
 import { ButtonLoading } from "@/components/common/button-loading";
-import { Button } from "@/components/ui/button";
 import {
   FormField,
   FormItem,
@@ -15,7 +14,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ShieldOffIcon, EyeOffIcon, EyeIcon } from "lucide-react";
+import { ShieldOffIcon } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -23,8 +22,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
-
-const SUCCESS_LOGIN_REDIRECTION = "/dashboard";
+import { InputPassword } from "@/components/common/forms/password-field";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -41,7 +39,6 @@ export function LoginForm({ redirectionUrl }: LoginFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
-  const [isShowingPassword, setIsShowingPassword] = useState(false);
   const [error, setError] = useState<AlertProps | null>(null);
 
   const form = useForm<LoginFormValues>({
@@ -67,7 +64,7 @@ export function LoginForm({ redirectionUrl }: LoginFormProps) {
       });
 
       if (authResponse?.status === 200) {
-        router.replace(SUCCESS_LOGIN_REDIRECTION);
+        router.replace(redirectionUrl);
         return;
       }
 
@@ -129,30 +126,7 @@ export function LoginForm({ redirectionUrl }: LoginFormProps) {
                   </FormLabel>
 
                   <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={isShowingPassword ? "text" : "password"}
-                        placeholder={
-                          isShowingPassword ? "supersecretpassword" : "******"
-                        }
-                        className={cn(fieldState.error && "border-destructive")}
-                        {...field}
-                      />
-
-                      <Button
-                        onClick={() => setIsShowingPassword(!isShowingPassword)}
-                        asChild
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                        variant="ghost"
-                        size="icon"
-                      >
-                        {isShowingPassword ? (
-                          <EyeOffIcon className="h-5 w-5 stroke-muted-foreground" />
-                        ) : (
-                          <EyeIcon className="h-5 w-5 stroke-muted-foreground" />
-                        )}
-                      </Button>
-                    </div>
+                    <InputPassword error={fieldState.error} {...field} />
                   </FormControl>
 
                   <FormMessage />

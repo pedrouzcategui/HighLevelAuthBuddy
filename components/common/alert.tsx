@@ -6,6 +6,9 @@ export type AlertProps = {
   Icon?: LucideIcon;
 };
 
+// TODO: this can be a reusable and generic component like `Bootstrap Alert`
+// should be nice to create variants for state colors like success, warning, and so on
+// for now it has been only used with error state, so variants were not implemented
 export function Alert({ title, description, Icon }: AlertProps) {
   return (
     <section className="flex gap-5 items-center bg-destructive-light border-2 border-destructive rounded-md px-5 py-3">
