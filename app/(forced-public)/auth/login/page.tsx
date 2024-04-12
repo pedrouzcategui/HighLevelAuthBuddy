@@ -8,9 +8,11 @@ import {
 import { LoginShowcase } from "@/components/auth/login/login-showcase";
 import { getSession } from "next-auth/react";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 
 export default async function Login() {
-  const session = await getSession();
+
+  const session = await getServerSession();
 
   if (session) {
     redirect('/dashboard')

@@ -54,15 +54,17 @@ model User {
 }
 
 model Location {
-  id           String  @id @default(uuid())
-  companyId    String
-  Agency       Agency? @relation(fields: [agencyId], references: [id])
-  User         User?   @relation(fields: [userId], references: [id])
-  name         String
-  access_token String  @db.Text
-  userId       String?
-  agencyId     String?
-  Log          Log[]
+  id            String   @id @default(uuid())
+  companyId     String
+  Agency        Agency?  @relation(fields: [agencyId], references: [id])
+  User          User?    @relation(fields: [userId], references: [id])
+  name          String?
+  access_token  String   @db.Text
+  refresh_token String   @db.Text
+  issueDate     DateTime
+  userId        String?
+  agencyId      String?
+  Log           Log[]
 }
 
 model Agency {
