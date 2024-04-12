@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LoginShowcase } from "@/components/login/login-showcase";
+import { LoginShowcase } from "@/components/auth/login/login-showcase";
 
 export default function Login() {
   return (
