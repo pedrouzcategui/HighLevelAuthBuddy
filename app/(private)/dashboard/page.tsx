@@ -1,13 +1,10 @@
-// TODO: obviously use client should not be here because this is a page xd
-// Just for the moment dont worry
-
 import { LogoutButton } from "@/components/auth/dashboard/logout-buttons";
-import { getCurrentUser } from "@/lib/user";
+import { getServerSession } from "@/lib/auth";
 
 export default async function Dashboard() {
-  const user = await getCurrentUser();
+  const session = await getServerSession();
 
-  console.log(user);
+  console.log(session?.user.userId);
 
   return (
     <div>

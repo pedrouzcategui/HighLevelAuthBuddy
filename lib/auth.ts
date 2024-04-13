@@ -1,4 +1,7 @@
-import { type NextAuthOptions } from "next-auth";
+import {
+  type NextAuthOptions,
+  getServerSession as getNextAuthServerSession,
+} from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -65,5 +68,29 @@ export const authConfig = {
   ],
   callbacks: {
     redirect: async ({ url }) => url,
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token.userId = user.id;
+      }
+
+      return token;
+    },
+    session: async ({ token, session }) => {
+      if (session?.user) {
+        session.user.userId = token.userId;
+      }
+
+      return session;
+    },
   },
 } satisfies NextAuthOptions;
+
+/**
+ * Wrapper for `getServerSession` function exposed by `next-auth` to allow session accessing
+ * based on the extra configs set up in `authConfig`.
+ *
+ * This function should be used for accessing to session data in server contexts (e.g api route handlers or RSC).
+ */
+export async function getServerSession() {
+  return await getNextAuthServerSession(authConfig);
+}
