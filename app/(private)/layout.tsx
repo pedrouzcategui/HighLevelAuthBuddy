@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+import { getCurrentUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -7,9 +7,9 @@ type PrivateLayoutProps = {
 };
 
 export default async function PrivateLayout({ children }: PrivateLayoutProps) {
-  const session = await getServerSession();
+  const user = await getCurrentUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/auth/login");
   }
 

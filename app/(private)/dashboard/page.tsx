@@ -1,21 +1,19 @@
-"use client";
 // TODO: obviously use client should not be here because this is a page xd
 // Just for the moment dont worry
 
-import { Button } from "@/components/ui/button";
-import { signOut } from "next-auth/react";
+import { LogoutButton } from "@/components/auth/dashboard/logout-buttons";
+import { getCurrentUser } from "@/lib/user";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+  const user = await getCurrentUser();
+
+  console.log(user);
+
   return (
     <div>
       <h1>This is the dashboard</h1>
 
-      <Button
-        onClick={async () => await signOut({ callbackUrl: "/auth/login" })}
-        variant="destructive"
-      >
-        Sign out
-      </Button>
+      <LogoutButton />
     </div>
   );
 }
