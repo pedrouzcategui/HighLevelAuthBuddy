@@ -1,4 +1,4 @@
-import { getServerSession } from "next-auth";
+import { getCurrentUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
 type AuthLayoutProps = {
@@ -6,9 +6,9 @@ type AuthLayoutProps = {
 };
 
 export default async function AuthLayout({ children }: AuthLayoutProps) {
-  const session = await getServerSession();
+  const user = await getCurrentUser();
 
-  if (session) {
+  if (user) {
     redirect("/dashboard");
   }
 
