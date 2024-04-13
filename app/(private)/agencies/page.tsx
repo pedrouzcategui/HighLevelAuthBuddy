@@ -19,7 +19,15 @@ export default async function AgenciesPage() {
                     <Button>
                         <PlusCircle size={16} className="mr-2" />
                         <span>
-                            Connect
+                            Connect Location
+                        </span>
+                    </Button>
+                </Link>
+                <Link href={AUTHORIZATION_PAGE_URL}>
+                    <Button>
+                        <PlusCircle size={16} className="mr-2" />
+                        <span>
+                            Connect Agency
                         </span>
                     </Button>
                 </Link>
