@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,23 +14,17 @@ export default function Register() {
       <Card className="w-[440px] p-4">
         <CardHeader className="text-center">
           <CardTitle>Register in Auth Buddy</CardTitle>
-
-          {/* TODO: add hook text for registering */}
-          <CardDescription>Some hook text?</CardDescription>
+          <CardDescription>
+            {"Already have an account? "}
+            <Link href="/auth/login" className="text-primary font-semibold">
+              Sign in
+            </Link>
+          </CardDescription>
         </CardHeader>
 
         <CardContent>
           <RegisterForm />
         </CardContent>
-
-        <CardFooter>
-          <span className="block w-full text-center text-muted-foreground text-sm">
-            {"Already have an account? "}
-            <Link className="text-primary font-semibold" href="/auth/login">
-              Sign in here
-            </Link>
-          </span>
-        </CardFooter>
       </Card>
     </main>
   );
