@@ -3,15 +3,14 @@ import React from 'react'
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { Prisma, Location } from '@prisma/client'
-
+import { Location } from '@prisma/client'
+import { Button } from '@/components/ui/button'
+import { RefreshCcw, Copy } from 'lucide-react'
 interface LocationsTableProps {
     locations: Location[]
 }
@@ -34,8 +33,19 @@ export default function LocationsTable({ locations }: LocationsTableProps) {
                         <TableCell className="font-medium">{location.name}</TableCell>
                         <TableCell>{location.issueDate.toDateString()}</TableCell>
                         <TableCell>IDK</TableCell>
-                        <TableCell>{location.access_token.slice(0, 50)}...</TableCell>
-                        <TableCell className="text-right">Regenerate</TableCell>
+                        <TableCell>
+                            <span>
+                                {location.access_token.slice(0, 10)}******************
+                            </span>
+                            <Button variant={'ghost'}>
+                                <Copy size={12} />
+                            </Button>
+                        </TableCell>
+                        <TableCell className="text-right">
+                            <form>
+                                <Button variant={'outline'}> <RefreshCcw size={12} /> </Button>
+                            </form>
+                        </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
