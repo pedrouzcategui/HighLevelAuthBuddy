@@ -6,6 +6,7 @@ declare global {
       AUTH_BUDDY_CLIENT_ID: string;
       AUTH_BUDDY_CLIENT_SECRET: string;
       AUTH_BUDDY_REDIRECT_URI: string;
+      BASE_APP_URL: string;
     }
   }
 }

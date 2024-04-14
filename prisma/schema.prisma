@@ -55,7 +55,7 @@ model User {
 
 model Location {
   id            String   @id @default(uuid())
-  companyId     String
+  companyId     String?
   Company       Company? @relation(fields: [companyId], references: [id])
   User          User?    @relation(fields: [userId], references: [id])
   name          String?

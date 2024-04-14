@@ -1,8 +1,8 @@
 export interface LocationResponse {
-  location: LocationClass;
+  location: LocationResource;
 }
 
-export interface LocationClass {
+export interface LocationResource {
   id: string;
   companyId: string;
   name: string;

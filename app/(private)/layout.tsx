@@ -17,22 +17,54 @@ export default async function PrivateLayout({
     return (
         <div>
             <div className="grid grid-cols-6">
-                <div className="relative">
-                    <div className="p-4 shadow h-screen absolute w-full">
-                        <ul>
-                            <Link href={'/dashboard'}>
-                                <li>Dashboard</li>
-                            </Link>
-                            <Link href={'/agencies'}>
-                                <li>Agencies</li>
-                            </Link>
-                        </ul>
-                    </div>
-                </div>
+                <Sidebar />
                 <div className="col-span-5 px-8 py-4">
                     {children}
                 </div>
             </div>
         </div>
     );
+}
+
+const NAV_OPTIONS = [
+    {
+        label: 'Dashboard',
+        href: '/dashboard'
+    },
+    {
+        label: 'Agencies',
+        href: '/agencies'
+    },
+    {
+        label: 'Locations',
+        href: '/locations'
+    },
+    {
+        label: 'Install Apps',
+        href: '/apps'
+    },
+    {
+        label: 'API Keys',
+        href: '/api-keys'
+    },
+]
+
+function Sidebar() {
+    return (
+        <div className="relative">
+            <div className="p-4 shadow h-screen absolute w-full">
+                <ul>
+                    {
+                        NAV_OPTIONS.map(option => (
+                            <div className="mb-4">
+                                <Link href={option.href}>
+                                    <li>{option.label}</li>
+                                </Link>
+                            </div>
+                        ))
+                    }
+                </ul>
+            </div>
+        </div>
+    )
 }

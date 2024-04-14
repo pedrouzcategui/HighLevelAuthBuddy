@@ -1,7 +1,8 @@
-import { Location } from "@prisma/client";
+import { Company, Location } from "@prisma/client";
 import axios from "axios";
-import { LocationClass, LocationResponse } from "./types/LocationResponse";
+import { LocationResource, LocationResponse } from "./types/LocationResponse";
 import { AuthorizationResponse } from "./types/AuthorizationResponse";
+import { CompanyResource, CompanyResponse } from "./types/CompanyResponse";
 
 const BASE_URL = "https://services.leadconnectorhq.com";
 const VERSION_DATE = "2021-07-28";
@@ -14,7 +15,7 @@ export const LeadConnectorAPI = {
   getLocation: async function (
     locationId: string,
     accessToken: string,
-  ): Promise<LocationClass> {
+  ): Promise<LocationResource> {
     let {
       data: { location },
     } = await api.get<LocationResponse>(`/locations/${locationId}`, {
@@ -37,8 +38,25 @@ export const LeadConnectorAPI = {
     api.get("/");
   },
 
-  getAgency: function (companyId: string) {
-    api.get("/");
+  getCompany: async function (
+    companyId: string,
+    accessToken: string,
+  ): Promise<CompanyResource> {
+    const {
+      data: { company },
+    } = await api.get<CompanyResponse>(`/companies/${companyId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Version: VERSION_DATE,
+        Accept: "application/json",
+      },
+    });
+
+    return company;
+  },
+
+  createCompany: async function (): Promise<Company> {
+    return {} as Company;
   },
 
   getAuthorizationObject: async function (
