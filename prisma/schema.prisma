@@ -47,7 +47,7 @@ model User {
   password            String?
   accounts            Account[]
   sessions            Session[]
-  agencies            Agency[]
+  agencies            Company[]
   locations           Location[]
   Auth_Buddy_API_Keys Auth_Buddy_API_Key[]
   Log                 Log[]
@@ -56,18 +56,17 @@ model User {
 model Location {
   id            String   @id @default(uuid())
   companyId     String
-  Agency        Agency?  @relation(fields: [agencyId], references: [id])
+  Company       Company? @relation(fields: [companyId], references: [id])
   User          User?    @relation(fields: [userId], references: [id])
   name          String?
   access_token  String   @db.Text
   refresh_token String   @db.Text
   issueDate     DateTime
   userId        String?
-  agencyId      String?
   Log           Log[]
 }
 
-model Agency {
+model Company {
   id        String     @id @default(uuid())
   companyId String
   name      String
