@@ -1,9 +1,8 @@
-import { api } from "@/apis/LeadConnectorAPI";
+import { LeadConnectorAPI, api } from "@/apis/LeadConnectorAPI";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-const { AUTH_BUDDY_CLIENT_ID, AUTH_BUDDY_CLIENT_SECRET, NEXTAUTH_URL } =
-  process.env;
+const { AUTH_BUDDY_CLIENT_ID, AUTH_BUDDY_CLIENT_SECRET } = process.env;
 const GRANT_TYPE = "authorization_code";
 
 interface AuthorizationResponse {
@@ -19,37 +18,28 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const code = searchParams.get("code");
+  if (!code) {
+    return Response.json({ error: true, status: 400 });
+  }
 
   const session = await getServerSession();
 
+  if (!session) {
+    return Response.json({ error: true, status: 401 });
+  }
+
   try {
-    const { data, statusText } = await api.post<AuthorizationResponse>(
-      "/oauth/token",
-      {
-        client_id: AUTH_BUDDY_CLIENT_ID,
-        client_secret: AUTH_BUDDY_CLIENT_SECRET,
-        grant_type: GRANT_TYPE,
+    const { locationId, access_token } =
+      await LeadConnectorAPI.getAuthorizationObject(
+        AUTH_BUDDY_CLIENT_ID,
+        AUTH_BUDDY_CLIENT_SECRET,
         code,
-      },
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json",
-        },
-      },
+      );
+
+    const Location = await LeadConnectorAPI.getLocation(
+      locationId,
+      access_token,
     );
-
-    return Response.json({ data });
-
-    // const {
-    //   data: { location: locationData },
-    // } = await LeadConnectorAPI.get(`/locations/${data.locationId}`, {
-    //   headers: {
-    //     Authorization: `Bearer ${data.access_token}`,
-    //     Version: "2021-07-28",
-    //     Accept: "application/json",
-    //   },
-    // });
 
     // const location = await db.location.create({
     //   data: {
@@ -61,6 +51,7 @@ export async function GET(request: Request) {
     //   },
     // });
 
+    return Response.json({ ...Location });
     // return NextResponse.redirect(`${NEXTAUTH_URL}/agencies`);
   } catch (error) {
     console.log(error);
