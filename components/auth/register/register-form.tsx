@@ -1,16 +1,18 @@
 "use client";
 
 import { type RegisterUserPayload } from "@/app/api/auth/register/route";
-import { Button } from "@/components/ui/button";
+import { ButtonLoading } from "@/components/common/button-loading";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useRegisterUser } from "@/hooks/auth/register";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -80,12 +82,19 @@ export function RegisterForm() {
             <FormField
               control={form.control}
               name="name"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Full name</FormLabel>
                   <FormControl>
-                    <Input type="text" placeholder="John Doe" {...field} />
+                    <Input
+                      className={cn(fieldState.error && "border-destructive")}
+                      type="text"
+                      placeholder="John Doe"
+                      {...field}
+                    />
                   </FormControl>
+
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -93,16 +102,19 @@ export function RegisterForm() {
             <FormField
               control={form.control}
               name="phone"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Phone number</FormLabel>
                   <FormControl>
                     <Input
+                      className={cn(fieldState.error && "border-destructive")}
                       type="text"
                       placeholder="+58 000-000-000"
                       {...field}
                     />
                   </FormControl>
+
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -111,16 +123,19 @@ export function RegisterForm() {
           <FormField
             control={form.control}
             name="email"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input
+                    className={cn(fieldState.error && "border-destructive")}
                     type="email"
                     placeholder="johndoe@test.com"
                     {...field}
                   />
                 </FormControl>
+
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -128,12 +143,19 @@ export function RegisterForm() {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="******" {...field} />
+                  <Input
+                    className={cn(fieldState.error && "border-destructive")}
+                    type="password"
+                    placeholder="******"
+                    {...field}
+                  />
                 </FormControl>
+
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -141,21 +163,27 @@ export function RegisterForm() {
           <FormField
             control={form.control}
             name="confirmPassword"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="******" {...field} />
+                  <Input
+                    className={cn(fieldState.error && "border-destructive")}
+                    type="password"
+                    placeholder="******"
+                    {...field}
+                  />
                 </FormControl>
+
+                <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        {/* TODO: create loading button state */}
-        <Button className="w-full" type="submit" disabled={isPending}>
+        <ButtonLoading className="w-full" type="submit" isLoading={isPending}>
           Create account
-        </Button>
+        </ButtonLoading>
       </form>
     </Form>
   );
