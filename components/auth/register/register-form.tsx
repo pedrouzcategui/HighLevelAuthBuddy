@@ -67,11 +67,11 @@ function PasswordRule({ isValid, message }: PasswordRuleProps) {
     <li
       className={cn(
         "text-sm flex items-center gap-2",
-        isValid ? "text-green-600" : "text-destructive",
+        isValid ? "text-success" : "text-destructive",
       )}
     >
       {isValid ? (
-        <CircleCheckIcon className="h-5 w-5 stroke-green-600" />
+        <CircleCheckIcon className="h-5 w-5 stroke-success" />
       ) : (
         <CircleXIcon className="h-5 w-5 stroke-destructive" />
       )}
