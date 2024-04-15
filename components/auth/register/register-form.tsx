@@ -15,9 +15,88 @@ import { Input } from "@/components/ui/input";
 import { useRegisterUser } from "@/hooks/auth/register";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleCheckIcon, CircleXIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+
+/**
+ * List of rules for strong password validation.
+ */
+const PASSWORD_RULES = [
+  {
+    message: "Should contain at least 8 characters",
+    validator: function hasMinLength(password: string) {
+      const MIN_PASSWORD_LENGTH = 8;
+      return password.length >= MIN_PASSWORD_LENGTH;
+    },
+  },
+  {
+    message: "Should contain at least one digit",
+    validator: function hasDigit(password: string) {
+      return /[0-9]/.test(password);
+    },
+  },
+  {
+    message: "Should contain at least one uppercase character",
+    validator: function hasUppercase(p: string) {
+      return /[A-Z]/.test(p);
+    },
+  },
+  {
+    message: "Should contain at least one lowercase character",
+    validator: function hasLowercase(p: string) {
+      return /[a-z]/.test(p);
+    },
+  },
+  {
+    message: "Should contain at least one special character",
+    validator: function hasSpecialCharacter(p: string) {
+      return /[`!@#$%^&*()_\-+=[\]{};':"\\|,.<>/?~]/.test(p);
+    },
+  },
+];
+
+type PasswordRuleProps = {
+  isValid: boolean;
+  message: string;
+};
+
+function PasswordRule({ isValid, message }: PasswordRuleProps) {
+  return (
+    <li
+      className={cn(
+        "text-sm flex items-center gap-2",
+        isValid ? "text-green-600" : "text-destructive",
+      )}
+    >
+      {isValid ? (
+        <CircleCheckIcon className="h-5 w-5 stroke-green-600" />
+      ) : (
+        <CircleXIcon className="h-5 w-5 stroke-destructive" />
+      )}
+      {message}
+    </li>
+  );
+}
+
+type PasswordValidationRulesProps = {
+  password: string;
+};
+
+function PasswordValidationRules({ password }: PasswordValidationRulesProps) {
+  return (
+    <ul className="flex flex-col gap-2 justify-center bg-muted p-4 rounded-md">
+      {PASSWORD_RULES.map(({ message, validator }) => (
+        <PasswordRule
+          key={message}
+          isValid={validator(password)}
+          message={message}
+        />
+      ))}
+    </ul>
+  );
+}
 
 const registerSchema = z
   .object({
@@ -27,12 +106,9 @@ const registerSchema = z
     phone: z.string().min(1),
     email: z.string().email(),
 
-    // TODO: password strength validation should be here? I think so
-    // For the moment; consider 8 length password a "FULL STRENGTH PASSWORD NEVER BE HACKED"
-
-    password: z.string().min(8),
-
-    // TODO: custom validator for checking if its value is same as `password` field
+    password: z.string().refine(function validatePasswordRules(password) {
+      return PASSWORD_RULES.every((r) => r.validator(password));
+    }),
     confirmPassword: z.string(),
   })
   .refine(({ password, confirmPassword }) => password === confirmPassword, {
@@ -153,10 +229,14 @@ export function RegisterForm() {
             render={({ field, fieldState }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <InputPassword error={fieldState.error} {...field} />
-                </FormControl>
-                <FormMessage />
+
+                <div className="flex flex-col gap-4">
+                  <FormControl>
+                    <InputPassword error={fieldState.error} {...field} />
+                  </FormControl>
+
+                  <PasswordValidationRules password={form.watch("password")} />
+                </div>
               </FormItem>
             )}
           />

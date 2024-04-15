@@ -11,7 +11,7 @@ import Link from "next/link";
 export default function Register() {
   return (
     <main className="h-screen grid place-items-center">
-      <Card className="w-[440px] p-4">
+      <Card className="w-[500px] p-4">
         <CardHeader className="text-center">
           <CardTitle>Register in Auth Buddy</CardTitle>
           <CardDescription>
