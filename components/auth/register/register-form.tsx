@@ -2,6 +2,7 @@
 
 import { type RegisterUserPayload } from "@/app/api/auth/register/route";
 import { ButtonLoading } from "@/components/common/button-loading";
+import { InputPassword } from "@/components/common/forms/password-field";
 import {
   Form,
   FormControl,
@@ -18,20 +19,26 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const registerSchema = z.object({
-  email: z.string().email(),
-  name: z.string().min(3),
+const registerSchema = z
+  .object({
+    name: z.string().min(3, "Full name is too short"),
 
-  // TODO: phone number validation
-  phone: z.string().min(1),
+    // TODO: phone number validation
+    phone: z.string().min(1),
+    email: z.string().email(),
 
-  // TODO: password strength validation should be here? I think so
-  // For the moment; consider 8 length password a "FULL STRENGTH PASSWORD NEVER BE HACKED"
-  password: z.string().min(8),
+    // TODO: password strength validation should be here? I think so
+    // For the moment; consider 8 length password a "FULL STRENGTH PASSWORD NEVER BE HACKED"
 
-  // TODO: custom validator for checking if its value is same as `password` field
-  confirmPassword: z.string().min(8),
-});
+    password: z.string().min(8),
+
+    // TODO: custom validator for checking if its value is same as `password` field
+    confirmPassword: z.string(),
+  })
+  .refine(({ password, confirmPassword }) => password === confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
@@ -147,14 +154,8 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>Password</FormLabel>
                 <FormControl>
-                  <Input
-                    className={cn(fieldState.error && "border-destructive")}
-                    type="password"
-                    placeholder="******"
-                    {...field}
-                  />
+                  <InputPassword error={fieldState.error} {...field} />
                 </FormControl>
-
                 <FormMessage />
               </FormItem>
             )}
@@ -167,12 +168,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>Confirm password</FormLabel>
                 <FormControl>
-                  <Input
-                    className={cn(fieldState.error && "border-destructive")}
-                    type="password"
-                    placeholder="******"
-                    {...field}
-                  />
+                  <InputPassword error={fieldState.error} {...field} />
                 </FormControl>
 
                 <FormMessage />
