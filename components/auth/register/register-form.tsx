@@ -19,6 +19,8 @@ import { CircleCheckIcon, CircleXIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import PhoneInput from "react-phone-number-input";
+import React from "react";
 
 /**
  * List of rules for strong password validation.
@@ -189,10 +191,9 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Phone number</FormLabel>
                   <FormControl>
-                    <Input
-                      className={cn(fieldState.error && "border-destructive")}
-                      type="text"
-                      placeholder="+58 000-000-000"
+                    <PhoneInput
+                      countrySelectComponent={React.Fragment}
+                      inputComponent={Input}
                       {...field}
                     />
                   </FormControl>
