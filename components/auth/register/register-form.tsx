@@ -19,7 +19,7 @@ import { CircleCheckIcon, CircleXIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useMask } from '@react-input/mask'
+import { useMask } from "@react-input/mask";
 import React from "react";
 
 /**
@@ -104,8 +104,9 @@ const registerSchema = z
   .object({
     name: z.string().min(3, "Full name is too short"),
 
-    // TODO: phone number validation
-    phone: z.string().min(1),
+    phone: z
+      .string()
+      .regex(/\+1 \(\d{3}\) \d{3}-\d{4}/, "Invalid phone number"),
     email: z.string().email(),
 
     password: z.string().refine(function validatePasswordRules(password) {
@@ -121,7 +122,11 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
-  const phoneInputMask = useMask({ showMask: true,  mask: "+1 (___) ___-____", replacement: { '_': /\d/ }})
+  const phoneInputMask = useMask({
+    showMask: true,
+    mask: "+1 (___) ___-____",
+    replacement: { _: /\d/ },
+  });
   const router = useRouter();
   const { mutateAsync, isPending } = useRegisterUser();
 
@@ -192,14 +197,15 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Phone number</FormLabel>
                   <FormControl>
-                    <Input 
+                    <Input
                       className={cn(fieldState.error && "border-destructive")}
                       type="tel"
-                       {...field} 
-                      ref={node => {
-                      phoneInputMask.current = node
-                      field.ref(node)
-                    }} />
+                      {...field}
+                      ref={(node) => {
+                        phoneInputMask.current = node;
+                        field.ref(node);
+                      }}
+                    />
                   </FormControl>
 
                   <FormMessage />
