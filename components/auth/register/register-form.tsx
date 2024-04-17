@@ -19,7 +19,6 @@ import { CircleCheckIcon, CircleXIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import PhoneInput from "react-phone-number-input";
 import React from "react";
 
 /**
@@ -191,11 +190,7 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Phone number</FormLabel>
                   <FormControl>
-                    <PhoneInput
-                      countrySelectComponent={React.Fragment}
-                      inputComponent={Input}
-                      {...field}
-                    />
+                    <Input placeholder="123123" type="tel" {...field} />
                   </FormControl>
 
                   <FormMessage />
