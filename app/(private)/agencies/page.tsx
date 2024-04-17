@@ -7,6 +7,7 @@ import { AuthBuddyAPI } from "@/apis/AuthBuddy/AuthBuddyAPI";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { CompanyLocationAccordion } from "@/components/authbuddy/CompanyLocationAccordion";
+import CompaniesTable from "@/components/authbuddy/CompaniesTable";
 const { AUTH_BUDDY_CLIENT_ID } = process.env;
 
 const AUTHORIZATION_PAGE_URL = `https://marketplace.gohighlevel.com/oauth/chooselocation?response_type=code&redirect_uri=http://localhost:3000/api/code&client_id=${AUTH_BUDDY_CLIENT_ID}&scope=contacts.write%20locations.readonly%20companies.readonly`
@@ -30,7 +31,7 @@ export default async function AgenciesPage() {
                     />
                 </div>
             </div>
-            {JSON.stringify(agencies)}
+            <CompaniesTable companies={agencies} />
         </div>
     )
 }

@@ -37,12 +37,18 @@ export async function GET(request: Request) {
   console.log(session);
 
   try {
-    const { locationId, companyId, access_token, userType, refresh_token } =
-      await LeadConnectorAPI.getAuthorizationObject(
-        AUTH_BUDDY_CLIENT_ID,
-        AUTH_BUDDY_CLIENT_SECRET,
-        code,
-      );
+    const {
+      locationId,
+      companyId,
+      access_token,
+      userType,
+      refresh_token,
+      expires_in,
+    } = await LeadConnectorAPI.getAuthorizationObject(
+      AUTH_BUDDY_CLIENT_ID,
+      AUTH_BUDDY_CLIENT_SECRET,
+      code,
+    );
 
     if (userType == "Company") {
       let companyRecord = await AuthBuddyAPI.getCompany(companyId);
@@ -59,6 +65,9 @@ export async function GET(request: Request) {
         companyId,
         companyResponse.name,
         session.user.id,
+        access_token,
+        refresh_token,
+        expires_in,
       );
 
       return NextResponse.redirect(`${BASE_APP_URL}/agencies`);

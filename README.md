@@ -8,3 +8,7 @@ Official Repository of Auth Buddy, the service that handles the headache of sett
 2. Assign the values as it appears in the .env.example file
 3. `npm install`
 4. `npm run dev`
+
+### Other Commands
+
+- `npx prisma generate`: creates the prisma client

@@ -7,11 +7,17 @@ export const AuthBuddyAPI = {
     companyId: string,
     name: string,
     userId: string,
+    access_token: string,
+    refresh_token: string,
+    expires_in: number,
   ): Promise<Company> {
     const company = await db.company.create({
       data: {
         companyId,
         name,
+        access_token,
+        expires_in,
+        refresh_token,
         User: {
           connect: {
             id: userId,
