@@ -3,9 +3,10 @@ import { LogoutButton } from "@/components/auth/dashboard/logout-buttons";
 export default async function Dashboard() {
   return (
     <div>
-      <h1>This is the dashboard</h1>
-
-      <LogoutButton />
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Dashboard</h2>
+        <LogoutButton />
+      </div>
     </div>
   );
 }

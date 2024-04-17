@@ -47,31 +47,35 @@ model User {
   password            String?
   accounts            Account[]
   sessions            Session[]
-  agencies            Agency[]
+  agencies            Company[]
   locations           Location[]
   Auth_Buddy_API_Keys Auth_Buddy_API_Key[]
   Log                 Log[]
 }
 
 model Location {
-  id           String  @id @default(uuid())
-  companyId    String
-  Agency       Agency? @relation(fields: [agencyId], references: [id])
-  User         User?   @relation(fields: [userId], references: [id])
-  name         String
-  access_token String  @db.Text
-  userId       String?
-  agencyId     String?
-  Log          Log[]
+  id            String   @id @default(uuid())
+  companyId     String?
+  Company       Company? @relation(fields: [companyId], references: [id])
+  User          User?    @relation(fields: [userId], references: [id])
+  name          String?
+  access_token  String   @db.Text
+  refresh_token String   @db.Text
+  issueDate     DateTime
+  userId        String?
+  Log           Log[]
 }
 
-model Agency {
-  id        String     @id @default(uuid())
-  companyId String
-  name      String
-  User      User?      @relation(fields: [userId], references: [id])
-  userId    String?
-  Location  Location[]
+model Company {
+  id            String     @id @default(uuid())
+  companyId     String
+  name          String
+  access_token  String     @db.Text
+  refresh_token String     @db.Text
+  expires_in    Int
+  User          User?      @relation(fields: [userId], references: [id])
+  userId        String?
+  Location      Location[]
 }
 
 model Auth_Buddy_API_Key {
