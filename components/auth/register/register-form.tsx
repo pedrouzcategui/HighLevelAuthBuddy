@@ -1,6 +1,5 @@
 "use client";
 
-import { type RegisterUserPayload } from "@/app/api/auth/register/route";
 import { ButtonLoading } from "@/components/common/button-loading";
 import { InputPassword } from "@/components/common/forms/password-field";
 import {
@@ -15,12 +14,17 @@ import { Input } from "@/components/ui/input";
 import { useRegisterUser } from "@/hooks/auth/register";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleCheckIcon, CircleXIcon } from "lucide-react";
+import { CircleCheckIcon, CircleXIcon, ShieldOffIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useMask } from "@react-input/mask";
-import React from "react";
+import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
+import { isAxiosError } from "axios";
+import { Alert, type AlertProps } from "@/components/common/alert";
+import { HTTP_CODES } from "@/lib/http";
 
 /**
  * List of rules for strong password validation.
@@ -120,7 +124,10 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
+  const [error, setError] = useState<AlertProps | null>(null);
+
   const router = useRouter();
+  const { toast } = useToast();
   const { mutateAsync, isPending } = useRegisterUser();
   const phoneInputMask = useMask({
     showMask: true,
@@ -139,46 +146,119 @@ export function RegisterForm() {
     },
   });
 
-  async function onSubmit(formValues: RegisterFormValues) {
+  async function onSubmit({
+    email,
+    name,
+    password,
+    phone,
+  }: RegisterFormValues) {
     try {
-      const payload = {
-        email: formValues.email,
-        name: formValues.name,
-        password: formValues.password,
-        phone: formValues.phone,
-      } satisfies RegisterUserPayload;
+      await mutateAsync({
+        email,
+        name,
+        password,
+        phone,
+      });
 
-      await mutateAsync(payload);
+      const authResponse = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
 
-      router.replace("/auth/login");
+      if (authResponse?.status === HTTP_CODES.OK) {
+        router.replace("/dashboard");
+      }
     } catch (err) {
-      // TODO: handle with toast
-      alert(
-        "user already registered? Something went wrong in user registration",
-      );
+      if (isAxiosError(err)) {
+        if (err.response?.status === HTTP_CODES.BAD_REQUEST) {
+          const { message } = err.response?.data;
+          setError({
+            title: "Register error",
+            description: message,
+            Icon: ShieldOffIcon,
+          });
+        }
+
+        return;
+      }
+
+      // IDK how auth can fail and reach this point
+      toast({
+        title: "Service unavailable",
+        description: "Hmmm, something went wrong. Try again later.",
+        variant: "destructive",
+      });
     }
   }
 
   return (
-    <Form {...form}>
-      <form
-        className="space-y-6"
-        onSubmit={form.handleSubmit(onSubmit)}
-        noValidate
-      >
-        <div className="space-y-4">
-          <div className="flex gap-3">
+    <div className="space-y-4">
+      {error && <Alert {...error} />}
+
+      <Form {...form}>
+        <form
+          className="space-y-6"
+          onSubmit={form.handleSubmit(onSubmit)}
+          noValidate
+        >
+          <div className="space-y-4">
+            <div className="flex gap-3">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Full name</FormLabel>
+                    <FormControl>
+                      <Input
+                        className={cn(fieldState.error && "border-destructive")}
+                        type="text"
+                        placeholder="John Doe"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Phone number</FormLabel>
+                    <FormControl>
+                      <Input
+                        className={cn(fieldState.error && "border-destructive")}
+                        type="tel"
+                        {...field}
+                        ref={(node) => {
+                          phoneInputMask.current = node;
+                          field.ref(node);
+                        }}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
-              name="name"
+              name="email"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Full name</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input
                       className={cn(fieldState.error && "border-destructive")}
-                      type="text"
-                      placeholder="John Doe"
+                      type="email"
+                      placeholder="johndoe@test.com"
                       {...field}
                     />
                   </FormControl>
@@ -190,20 +270,32 @@ export function RegisterForm() {
 
             <FormField
               control={form.control}
-              name="phone"
+              name="password"
               render={({ field, fieldState }) => (
                 <FormItem>
-                  <FormLabel>Phone number</FormLabel>
-                  <FormControl>
-                    <Input
-                      className={cn(fieldState.error && "border-destructive")}
-                      type="tel"
-                      {...field}
-                      ref={(node) => {
-                        phoneInputMask.current = node;
-                        field.ref(node);
-                      }}
+                  <FormLabel>Password</FormLabel>
+
+                  <div className="flex flex-col gap-4">
+                    <FormControl>
+                      <InputPassword error={fieldState.error} {...field} />
+                    </FormControl>
+
+                    <PasswordValidationRules
+                      password={form.watch("password")}
                     />
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <InputPassword error={fieldState.error} {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -212,64 +304,11 @@ export function RegisterForm() {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    className={cn(fieldState.error && "border-destructive")}
-                    type="email"
-                    placeholder="johndoe@test.com"
-                    {...field}
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-
-                <div className="flex flex-col gap-4">
-                  <FormControl>
-                    <InputPassword error={fieldState.error} {...field} />
-                  </FormControl>
-
-                  <PasswordValidationRules password={form.watch("password")} />
-                </div>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field, fieldState }) => (
-              <FormItem>
-                <FormLabel>Confirm password</FormLabel>
-                <FormControl>
-                  <InputPassword error={fieldState.error} {...field} />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <ButtonLoading className="w-full" type="submit" isLoading={isPending}>
-          Create account
-        </ButtonLoading>
-      </form>
-    </Form>
+          <ButtonLoading className="w-full" type="submit" isLoading={isPending}>
+            Create account
+          </ButtonLoading>
+        </form>
+      </Form>
+    </div>
   );
 }

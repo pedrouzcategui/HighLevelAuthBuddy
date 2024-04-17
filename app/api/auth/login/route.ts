@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { HTTP_CODES } from "@/lib/http";
 import bcrypt from "bcrypt";
 
 export type LoginPayload = {
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
           message: "Invalid credentials",
         },
         {
-          status: 401,
+          status: HTTP_CODES.UNAUTHORIZED,
         },
       );
     }
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
           message: "User is already registered but with other auth provider",
         },
         {
-          status: 401,
+          status: HTTP_CODES.UNAUTHORIZED,
         },
       );
     }
@@ -55,7 +56,7 @@ export async function POST(request: Request) {
           message: "Invalid credentials",
         },
         {
-          status: 401,
+          status: HTTP_CODES.UNAUTHORIZED,
         },
       );
     }

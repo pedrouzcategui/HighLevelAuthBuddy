@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Link from "next/link";
 import { InputPassword } from "@/components/common/forms/password-field";
+import { HTTP_CODES } from "@/lib/http";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -57,19 +58,15 @@ export function LoginForm({ redirectionUrl }: LoginFormProps) {
       const authResponse = await signIn("credentials", {
         email,
         password,
-
-        // Manual redirection because we dont want to arrive into default NextAuth pages
-        // (and also dont want to configure them xd)
         redirect: false,
       });
 
-      if (authResponse?.status === 200) {
+      if (authResponse?.status === HTTP_CODES.OK) {
         router.replace(redirectionUrl);
         return;
       }
 
-      // TODO: Handle better error messages
-      if (authResponse?.status === 401) {
+      if (authResponse?.status === HTTP_CODES.UNAUTHORIZED) {
         setError({
           title: "Authentication error",
           description: "Cannot find any account with given credentials.",
