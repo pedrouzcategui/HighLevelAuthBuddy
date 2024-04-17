@@ -19,6 +19,7 @@ import { CircleCheckIcon, CircleXIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useMask } from '@react-input/mask'
 import React from "react";
 
 /**
@@ -120,6 +121,7 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
+  const phoneInputMask = useMask({ showMask: true,  mask: "+1 (___) ___-____", replacement: { '_': /\d/ }})
   const router = useRouter();
   const { mutateAsync, isPending } = useRegisterUser();
 
@@ -190,7 +192,14 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Phone number</FormLabel>
                   <FormControl>
-                    <Input placeholder="123123" type="tel" {...field} />
+                    <Input 
+                      className={cn(fieldState.error && "border-destructive")}
+                      type="tel"
+                       {...field} 
+                      ref={node => {
+                      phoneInputMask.current = node
+                      field.ref(node)
+                    }} />
                   </FormControl>
 
                   <FormMessage />
