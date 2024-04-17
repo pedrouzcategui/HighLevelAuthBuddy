@@ -1,16 +1,17 @@
+'use client'
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Company } from "@prisma/client"
+import { Company, Location } from "@prisma/client"
 
 type AgenciesAccordionProps = {
-    companies: Company[]
+    companies: Company[] | Location[]
 }
 
-export function AgenciesAccordion({ companies }: AgenciesAccordionProps) {
+export function CompanyLocationAccordion({ companies }: AgenciesAccordionProps) {
     return (
         <Accordion type="single" collapsible>
             {

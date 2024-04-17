@@ -22,13 +22,22 @@ export const AuthBuddyAPI = {
     return company as Company;
   },
   //
-  findCompany: async function (companyId: string): Promise<Company | null> {
+  getCompany: async function (companyId: string): Promise<Company | null> {
     const companyRecord = await db.company.findFirst({
       where: {
         companyId,
       },
     });
     return companyRecord;
+  },
+  //
+  getCompanies: async function (userId: string): Promise<Company[] | null> {
+    const companies = await db.company.findMany({
+      where: {
+        userId,
+      },
+    });
+    return companies;
   },
   //
   getLocation: async function (locationId: string): Promise<Location | null> {

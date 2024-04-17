@@ -1,7 +1,6 @@
 import { AuthBuddyAPI } from "@/apis/AuthBuddy/AuthBuddyAPI";
 import { LeadConnectorAPI } from "@/apis/LeadConnector/LeadConnectorAPI";
-import { db } from "@/lib/db";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
 const { AUTH_BUDDY_CLIENT_ID, AUTH_BUDDY_CLIENT_SECRET, BASE_APP_URL } =
@@ -35,6 +34,8 @@ export async function GET(request: Request) {
     });
   }
 
+  console.log(session);
+
   try {
     const { locationId, companyId, access_token, userType, refresh_token } =
       await LeadConnectorAPI.getAuthorizationObject(
@@ -44,7 +45,7 @@ export async function GET(request: Request) {
       );
 
     if (userType == "Company") {
-      let companyRecord = await AuthBuddyAPI.findCompany(companyId);
+      let companyRecord = await AuthBuddyAPI.getCompany(companyId);
 
       if (companyRecord)
         return NextResponse.redirect(`${BASE_APP_URL}/agencies`);

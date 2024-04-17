@@ -3,6 +3,10 @@ import { db } from "@/lib/db";
 import Link from "next/link";
 import { PlusCircle } from 'lucide-react'
 import { AuthBuddyAPI } from "@/apis/AuthBuddy/AuthBuddyAPI";
+import { CompanyLocationAccordion } from "@/components/authbuddy/CompanyLocationAccordion";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import LocationsTable from "../../../components/authbuddy/LocationsTable";
 
 const { AUTH_BUDDY_CLIENT_ID } = process.env;
 
@@ -10,7 +14,12 @@ const AUTHORIZATION_PAGE_URL = `https://marketplace.gohighlevel.com/oauth/choose
 
 export default async function AgenciesPage() {
 
-    const locations = await AuthBuddyAPI.getLocations("1");
+    const session = await getServerSession();
+    if (!session) redirect('/auth/login')
+
+    const locations = await AuthBuddyAPI.getLocations(session.user.id);
+    if (!locations) redirect('/dashboard')
+
 
     return (
         <div>
@@ -23,8 +32,7 @@ export default async function AgenciesPage() {
                     />
                 </div>
             </div>
-            {/* <AgenciesAccordion companies={[]} /> */}
-            {/* <LocationsTable locations={locations} /> */}
+            <LocationsTable locations={locations} />
         </div>
     )
 }

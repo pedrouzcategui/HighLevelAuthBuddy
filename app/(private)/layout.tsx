@@ -55,8 +55,8 @@ function Sidebar() {
             <div className="p-4 shadow h-screen absolute w-full">
                 <ul>
                     {
-                        NAV_OPTIONS.map(option => (
-                            <div className="mb-4">
+                        NAV_OPTIONS.map((option, i) => (
+                            <div key={`${option.href}-${i}`} className="mb-4">
                                 <Link href={option.href}>
                                     <li>{option.label}</li>
                                 </Link>
