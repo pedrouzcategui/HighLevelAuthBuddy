@@ -103,12 +103,10 @@ function PasswordValidationRules({ password }: PasswordValidationRulesProps) {
 const registerSchema = z
   .object({
     name: z.string().min(3, "Full name is too short"),
-
     phone: z
       .string()
       .regex(/\+1 \(\d{3}\) \d{3}-\d{4}/, "Invalid phone number"),
     email: z.string().email(),
-
     password: z.string().refine(function validatePasswordRules(password) {
       return PASSWORD_RULES.every((r) => r.validator(password));
     }),
@@ -122,13 +120,13 @@ const registerSchema = z
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
+  const router = useRouter();
+  const { mutateAsync, isPending } = useRegisterUser();
   const phoneInputMask = useMask({
     showMask: true,
     mask: "+1 (___) ___-____",
     replacement: { _: /\d/ },
   });
-  const router = useRouter();
-  const { mutateAsync, isPending } = useRegisterUser();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
