@@ -6,15 +6,6 @@ import { NextResponse } from "next/server";
 const { AUTH_BUDDY_CLIENT_ID, AUTH_BUDDY_CLIENT_SECRET, BASE_APP_URL } =
   process.env;
 
-interface AuthorizationResponse {
-  access_token: string;
-  refresh_token: string;
-  userType: "Company" | "Location";
-  companyId: string;
-  locationId: string;
-  userId: string;
-}
-
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
@@ -33,8 +24,6 @@ export async function GET(request: Request) {
       message: "Unauthorized Request",
     });
   }
-
-  console.log(session);
 
   try {
     const {
@@ -73,7 +62,6 @@ export async function GET(request: Request) {
       return NextResponse.redirect(`${BASE_APP_URL}/agencies`);
     }
 
-    // Location Logic
     const locationRecord = await AuthBuddyAPI.getLocation(locationId);
 
     if (locationRecord)
@@ -84,16 +72,15 @@ export async function GET(request: Request) {
       access_token,
     );
 
-    const location = await AuthBuddyAPI.createLocation(
+    await AuthBuddyAPI.createLocation(
       locationResponse.name,
       access_token,
       refresh_token,
+      expires_in,
     );
 
-    // return Response.json({ ...location });
-    return NextResponse.redirect(`${BASE_APP_URL}/agencies`);
+    return NextResponse.redirect(`${BASE_APP_URL}/locations`);
   } catch (error) {
-    console.log(error);
     return Response.json({ error: true });
   }
 }

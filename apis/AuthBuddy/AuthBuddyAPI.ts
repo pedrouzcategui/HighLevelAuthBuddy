@@ -67,13 +67,14 @@ export const AuthBuddyAPI = {
     name: string,
     access_token: string,
     refresh_token: string,
+    expires_in: number,
   ): Promise<Location> {
     const location = await db.location.create({
       data: {
         name,
         access_token,
-        // companyId,
-        issueDate: new Date(),
+        generationDate: new Date(),
+        expires_in,
         refresh_token,
       },
     });

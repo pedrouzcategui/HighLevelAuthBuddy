@@ -54,28 +54,30 @@ model User {
 }
 
 model Location {
-  id            String   @id @default(uuid())
-  companyId     String?
-  Company       Company? @relation(fields: [companyId], references: [id])
-  User          User?    @relation(fields: [userId], references: [id])
-  name          String?
-  access_token  String   @db.Text
-  refresh_token String   @db.Text
-  issueDate     DateTime
-  userId        String?
-  Log           Log[]
+  id             String   @id @default(uuid())
+  companyId      String?
+  Company        Company? @relation(fields: [companyId], references: [id])
+  User           User?    @relation(fields: [userId], references: [id])
+  name           String?
+  access_token   String   @db.Text
+  refresh_token  String   @db.Text
+  generationDate DateTime @default(now())
+  expires_in     Int
+  userId         String?
+  Log            Log[]
 }
 
 model Company {
-  id            String     @id @default(uuid())
-  companyId     String
-  name          String
-  access_token  String     @db.Text
-  refresh_token String     @db.Text
-  expires_in    Int
-  User          User?      @relation(fields: [userId], references: [id])
-  userId        String?
-  Location      Location[]
+  id             String     @id @default(uuid())
+  companyId      String
+  name           String
+  access_token   String     @db.Text
+  refresh_token  String     @db.Text
+  generationDate DateTime   @default(now())
+  expires_in     Int
+  User           User?      @relation(fields: [userId], references: [id])
+  userId         String?
+  Location       Location[]
 }
 
 model Auth_Buddy_API_Key {
@@ -83,6 +85,7 @@ model Auth_Buddy_API_Key {
   user           User     @relation(fields: [userId], references: [id])
   apiKey         String   @db.Text
   generationDate DateTime @default(now())
+  expires_in     Int
   userId         String
 }
 
