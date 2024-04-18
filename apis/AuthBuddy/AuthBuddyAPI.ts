@@ -1,4 +1,4 @@
-import { Company, Location } from "@prisma/client";
+import { Auth_Buddy_API_Key, Company, Location } from "@prisma/client";
 import { db } from "@/lib/db";
 import { hash } from "bcrypt";
 
@@ -8,6 +8,16 @@ export const AuthBuddyAPI = {
     const token = crypto.randomUUID();
     const hashedToken = await hash(token, saltRounds);
     return hashedToken;
+  },
+  getApiKeys: async function (
+    userId: string,
+  ): Promise<Auth_Buddy_API_Key | null> {
+    const apikeys = await db.auth_Buddy_API_Key.findFirst({
+      where: {
+        userId,
+      },
+    });
+    return apikeys;
   },
   //
   createCompany: async function (

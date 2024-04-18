@@ -1,3 +1,4 @@
+import { AuthBuddyAPI } from "@/apis/AuthBuddy/AuthBuddyAPI";
 import { db } from "@/lib/db";
 import bcrypt from "bcrypt";
 
@@ -32,12 +33,20 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, HASH_ROUNDS);
 
+    const apiKey = await AuthBuddyAPI.generateApiKey();
+
     await db.user.create({
       data: {
         email,
         name,
         phone,
         password: hashedPassword,
+        Auth_Buddy_API_Keys: {
+          create: {
+            expires_in: 0,
+            apiKey,
+          },
+        },
       },
     });
 
