@@ -16,9 +16,7 @@ export function Alert({ title, description, Icon }: AlertProps) {
 
       <div>
         <header className="text-destructive font-medium">{title}</header>
-        {description && (
-          <p className="text-sm text-destructive-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm">{description}</p>}
       </div>
     </section>
   );

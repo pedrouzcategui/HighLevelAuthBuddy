@@ -15,7 +15,7 @@ export default async function Login() {
         <CardHeader className="text-center">
           <CardTitle>Welcome to Auth Buddy</CardTitle>
           <CardDescription>
-            Do not have an account yet?{" "}
+            {"Do not have an account yet? "}
             <Link href="/auth/register" className="text-primary font-semibold">
               Sign up
             </Link>
