@@ -17,5 +17,6 @@ export const API_ROUTES = {
   auth: {
     register: "/auth/register",
     login: "/auth/login",
+    passwordRecovery: "/auth/password-recovery",
   },
 };
