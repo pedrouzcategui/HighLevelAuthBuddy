@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { HTTP_CODES } from "@/lib/http";
 import bcrypt from "bcrypt";
 
 export type RegisterUserPayload = {
@@ -15,17 +16,30 @@ export async function POST(request: Request) {
     const { email, password, name, phone }: RegisterUserPayload =
       await request.json();
 
-    const userAlreadyExists = await db.user.findUnique({
-      where: { email },
+    const user = await db.user.findFirst({
+      where: {
+        OR: [{ email: { equals: email } }, { phone: { equals: phone } }],
+      },
     });
 
-    if (userAlreadyExists) {
+    if (user?.email === email) {
       return Response.json(
         {
-          message: "Invalid credentials",
+          message: "Email already registered",
         },
         {
-          status: 403,
+          status: HTTP_CODES.BAD_REQUEST,
+        },
+      );
+    }
+
+    if (user?.phone === phone) {
+      return Response.json(
+        {
+          message: "Phone number already registered",
+        },
+        {
+          status: HTTP_CODES.BAD_REQUEST,
         },
       );
     }
@@ -41,7 +55,7 @@ export async function POST(request: Request) {
       },
     });
 
-    return Response.json({}, { status: 201 });
+    return Response.json({}, { status: HTTP_CODES.CREATED });
   } catch (err) {
     console.error(err);
   }

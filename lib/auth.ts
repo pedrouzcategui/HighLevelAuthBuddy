@@ -12,6 +12,7 @@ import {
   type LoginPayload,
   type LoginResponse,
 } from "@/app/api/auth/login/route";
+import { HTTP_CODES } from "./http";
 
 export const authConfig = {
   // Warning: wtf `PrismaAdapter` is not compatible with expected adapter in `NextAuthOptions`
@@ -52,7 +53,7 @@ export const authConfig = {
 
         // TODO: I dont like use http status for evaluate conditions
         // Maybe return an `ok` field in all responses?
-        if (loginResponse.status !== 200) {
+        if (loginResponse.status !==  HTTP_CODES.OK) {
           return null;
         }
 
@@ -64,6 +65,7 @@ export const authConfig = {
       // TODO: find some way to make `.env` variables typed?
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      checks: ["none"],
     }),
   ],
   callbacks: {
@@ -83,6 +85,9 @@ export const authConfig = {
       return session;
     },
   },
+  pages: {
+    signIn: "/auth/login"
+  }
 } satisfies NextAuthOptions;
 
 /**
