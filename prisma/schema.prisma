@@ -52,14 +52,14 @@ model User {
 model Location {
   id             String   @id @default(uuid())
   companyId      String?
-  name           String?
-  access_token   String
-  userId         String?
-  refresh_token  String
-  expires_in     Int
-  generationDate DateTime @default(now())
   Company        Company? @relation(fields: [companyId], references: [id])
   User           User?    @relation(fields: [userId], references: [id])
+  name           String?
+  access_token   String   @db.Text
+  refresh_token  String   @db.Text
+  generationDate DateTime @default(now())
+  expires_in     Int
+  userId         String?
   Log            Log[]
 }
 
@@ -67,12 +67,12 @@ model Company {
   id             String     @id @default(uuid())
   companyId      String
   name           String
-  userId         String?
-  access_token   String
-  expires_in     Int
-  refresh_token  String
+  access_token   String     @db.Text
+  refresh_token  String     @db.Text
   generationDate DateTime   @default(now())
+  expires_in     Int
   User           User?      @relation(fields: [userId], references: [id])
+  userId         String?
   Location       Location[]
 }
 
@@ -80,6 +80,7 @@ model Auth_Buddy_API_Key {
   id             String   @id @default(uuid())
   apiKey         String
   generationDate DateTime @default(now())
+  expires_in     Int
   userId         String
   expires_in     Int
   user           User     @relation(fields: [userId], references: [id])
