@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import {
   Table,
   TableBody,
@@ -8,15 +8,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Company, Location } from "@prisma/client";
-import { Button } from "@/components/ui/button";
-import { RefreshCcw } from "lucide-react";
 import CopyButton from "./CopyButton";
+import { LeadConnectorAPI } from "@/apis/LeadConnector/LeadConnectorAPI";
+import RegenerationButton from "./RegenerationButton";
 
 interface CompaniesTableProps {
   resources: Company[] | Location[];
+  resources_type: "Company" | "Location";
 }
 
-export default function KeysTable({ resources }: CompaniesTableProps) {
+const {
+  AUTH_BUDDY_CLIENT_ID,
+  AUTH_BUDDY_CLIENT_SECRET,
+  AUTH_BUDDY_REDIRECT_URI,
+} = process.env;
+
+export default function KeysTable({
+  resources,
+  resources_type,
+}: CompaniesTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -39,12 +49,13 @@ export default function KeysTable({ resources }: CompaniesTableProps) {
               <CopyButton valueToCopy={resource.access_token} />
             </TableCell>
             <TableCell className="text-right">
-              <form>
-                <Button variant={"outline"}>
-                  {" "}
-                  <RefreshCcw size={12} />{" "}
-                </Button>
-              </form>
+              <RegenerationButton
+                client_id={AUTH_BUDDY_CLIENT_ID}
+                client_secret={AUTH_BUDDY_CLIENT_SECRET}
+                refresh_token={resource.refresh_token}
+                redirect_uri={AUTH_BUDDY_REDIRECT_URI}
+                user_type={resources_type}
+              />
             </TableCell>
           </TableRow>
         ))}

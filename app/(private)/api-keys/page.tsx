@@ -1,6 +1,5 @@
 import { AuthBuddyAPI } from "@/apis/AuthBuddy/AuthBuddyAPI";
 import CopyButton from "@/components/authbuddy/CopyButton";
-import KeysTable from "@/components/authbuddy/KeysTable";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -8,7 +7,7 @@ export default async function AuthBuddyApiKeysPage() {
   const session = await getServerSession();
   if (!session) redirect("/auth/login");
 
-  const apiKeyObject = await AuthBuddyAPI.getApiKeys(session.user.id);
+  const apiKeyObject = await AuthBuddyAPI.getApiKey(session.user.id);
 
   return (
     <div>

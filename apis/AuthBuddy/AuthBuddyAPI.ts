@@ -9,7 +9,7 @@ export const AuthBuddyAPI = {
     const hashedToken = await hash(token, saltRounds);
     return hashedToken;
   },
-  getApiKeys: async function (
+  getApiKey: async function (
     userId: string,
   ): Promise<Auth_Buddy_API_Key | null> {
     const apikeys = await db.auth_Buddy_API_Key.findFirst({
@@ -19,6 +19,7 @@ export const AuthBuddyAPI = {
     });
     return apikeys;
   },
+
   //
   createCompany: async function (
     companyId: string,
