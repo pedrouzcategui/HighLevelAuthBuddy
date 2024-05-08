@@ -28,7 +28,7 @@ export default async function AgenciesPage() {
           />
         </div>
       </div>
-      <KeysTable resources={locations} />
+      <KeysTable resources={locations} resources_type="Location" />
     </div>
   );
 }
