@@ -37,6 +37,7 @@ export async function GET(request: Request) {
       AUTH_BUDDY_CLIENT_ID,
       AUTH_BUDDY_CLIENT_SECRET,
       code,
+      "authorization_code",
     );
 
     if (userType == "Company") {

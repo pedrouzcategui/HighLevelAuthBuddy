@@ -5,9 +5,10 @@ import { useToast } from "@/components/ui/use-toast";
 
 interface CopyButtonProps {
   valueToCopy: string;
+  title?: string;
 }
 
-export default function CopyButton({ valueToCopy }: CopyButtonProps) {
+export default function CopyButton({ valueToCopy, title }: CopyButtonProps) {
   const { toast } = useToast();
 
   function copyToCLipboard() {
