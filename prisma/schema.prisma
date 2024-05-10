@@ -82,7 +82,6 @@ model Auth_Buddy_API_Key {
   generationDate DateTime @default(now())
   expires_in     Int
   userId         String
-  expires_in     Int
   user           User     @relation(fields: [userId], references: [id])
 }
 
