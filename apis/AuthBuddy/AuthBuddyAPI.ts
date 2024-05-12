@@ -1,8 +1,7 @@
-import { Company, Location } from "@prisma/client";
 import { db } from "@/lib/db";
+import type { Company, Location } from "@prisma/client";
 
 export const AuthBuddyAPI = {
-  //
   createCompany: async function (
     companyId: string,
     name: string,
@@ -27,7 +26,6 @@ export const AuthBuddyAPI = {
     });
     return company as Company;
   },
-  //
   getCompany: async function (companyId: string): Promise<Company | null> {
     const companyRecord = await db.company.findFirst({
       where: {
@@ -36,7 +34,6 @@ export const AuthBuddyAPI = {
     });
     return companyRecord;
   },
-  //
   getCompanies: async function (userId: string): Promise<Company[] | null> {
     const companies = await db.company.findMany({
       where: {
@@ -45,7 +42,6 @@ export const AuthBuddyAPI = {
     });
     return companies;
   },
-  //
   getLocation: async function (locationId: string): Promise<Location | null> {
     const locationRecord = await db.location.findFirst({
       where: {
@@ -54,7 +50,6 @@ export const AuthBuddyAPI = {
     });
     return locationRecord;
   },
-  //
   getLocations: async function (companyId: string): Promise<Location[] | null> {
     const locations = await db.location.findMany({
       where: {
